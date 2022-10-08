@@ -1,0 +1,15 @@
+{
+    "vocab_file" : "./model_pretrained/roberta-wwm-ext/vocab.txt",
+    "bert_config_path" : "./model_pretrained/roberta-wwm-ext/config.json",
+    "bert_pretrained_model_path" : "./model_pretrained/roberta-wwm-ext/pytorch_model.bin",
+
+    "num_class":130,
+    "cls_hidden_size": 128,
+    "cls_num_attention_heads": 8,
+    "max_seq_len" : 128,
+    
+    "num_tuning_layers" : 12,
+    "init_lr" : 1e-5,
+    "gradient_accumulation_steps" : 1,
+    "warmup_proportion" : 0.1
+}

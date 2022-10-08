@@ -1,0 +1,35 @@
+python train.py --model_config_file=configs/configsenti/bert_cls.json --save_model_path=model_saved/model_senti/bert/test/bert_test  --run_mode=train --train_stage=0 --train_data=./data/sentiment/test1/train.tsv --eval_data=./data/wentiment/test1/dev.tsv --epochs=12 --batch_size=32 --data_load_num_workers=2 --gpu_ids=-1 --debug_break=0
+
+
+python train.py --model_config_file=configs/configsenti/bert_cls.json --save_model_path=model_saved/model_senti/bert/bert_test --save_model_path_distill=model_saved/model_senti/bert/bert_test_distill --run_mode=train --train_stage=1 --train_data=./data/sentiment/test1/train.tsv --eval_data=./data/sentiment/test1/dev.tsv --epochs=12 --batch_size=32 --data_load_num_workers=2 --gpu_ids=-1 --debug_break=0
+
+
+python infer.py --model_config_file=configs/configsenti/bert_cls.json --save_model_path=model_saved/model_senti/bert/bert_test_distill --inference_speed=0.1 --infer_data=./data/sentiment/test1/test.tsv' --dump_info_file=./data/sentiment/test1/infer_info.txt --data_load_num_workers=2 --gpu_ids=-1 --debug_break=0
+
+
+
+echo ${config_senti_files[@]}
+
+echo $path1
+echo $path2
+echo ${save_model_senti_paths[@]}
+echo ${save_model_senti_path_ditills[@]}
+
+echo $path3
+echo $path4
+echo ${save_model_allsenti_paths[@]}
+echo ${save_model_allsenti_path_distills[@]}
+
+
+echo ${config_warn_files[@]}
+
+echo $path5
+echo $path6
+echo ${save_model_warn_paths[@]}
+echo ${save_model_warn_path_ditills[@]}
+
+
+echo $path7
+echo $path8
+echo ${save_model_allwarn_paths[@]}
+echo ${save_model_allwarn_path_distills[@]}

@@ -1,0 +1,13 @@
+python train.py \
+    --model_config_file='configs/configsenti/bert_cls.json' \
+    --save_model_path='model_saved/model_senti/bert/test/bert_test' \
+    --save_model_path_distill='model_saved/model_senti/bert/test/bert_test_distill' \
+    --run_mode=train \
+    --train_stage=1 \
+    --train_data='./data/sentiment/test1/train.tsv' \
+    --eval_data='./data/sentiment/test1/dev.tsv' \
+    --epochs=10 \
+    --batch_size=32 \
+    --data_load_num_workers=2 \
+    --gpu_ids=-1 \
+    --debug_break=0
