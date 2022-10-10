@@ -14,10 +14,10 @@ from sklearn.model_selection import train_test_split
         f1.write(str(id2label))
         f2.write(str(label2id))'''
 
-with open('data/label2id.txt', 'r', encoding="utf-8") as f:
+with open('label2id.txt', 'r', encoding="utf-8") as f:
     label2id0 = eval(f.read())
 label2id1 = {"正面": 0, "负面": 1, "闲聊": 2, "中性": 3}
-label2idlist=[label2id0,label2id1]
+label2idlist=[label2id1,label2id0]
 
 file0="data/warning"
 file1="data/sentiment"
@@ -25,23 +25,28 @@ file0list=["all/train.tsv","test1/train.tsv","test1/dev.tsv","test1/test.tsv","t
 file1list=["all/train.tsv","test1/train.tsv","test1/dev.tsv","test1/test.tsv","test2/train.tsv","test2/dev.tsv","test2/test.tsv"]
 file0lists=[os.path.join(file0, f) for f in file0list]
 file1lists=[os.path.join(file1, f) for f in file1list]
-filelists=[file0lists,file1lists]
+filelists=[file1lists,file0lists]
 
 
 def writetofile(file,data,label2id):
     with open(file, 'w', encoding="utf-8") as f:
         for i in range((len(data[0]))):
-            line = str(data[1].iloc[i]).replace("\t", "").replace("\n", "").replace("\r", "").replace(" ",
+            line = str(data[0].iloc[i]).replace("\t", "").replace("\n", "").replace("\r", "").replace(" ",
                                                                                                       "").strip()
-            s = str(data[0].iloc[i]).strip()
+            s = str(data[1].iloc[i]).strip()
             f.write(str(label2id[s]) + "\t" + line + "\n")
 
 
-def splitratio(file,sheets,label2ids,filelists,ratiolists):
-    for sheet, label2id, filelist in zip(sheets, label2ids,filelists):
-        data = pd.read_excel(file, header=None, sheet_name=sheet, skiprows=[0])
-        data = shuffle(data)
+def splitratio(file,label2ids,filelists,ratiolists):
+    alldata = pd.read_excel(file, header=None, sheet_name=0, skiprows=[0])
+    alldata = shuffle(alldata)
+    ids=[1,2]
+    for id,label2id, filelist in zip(ids,label2ids,filelists):
+        lists=[0,id]
+        data=alldata[lists]
+        data.columns = [0, 1]
         writetofile(filelist[0], data, label2id)
+
         for test_size in ratiolists:
             if test_size==0.4:
                 train, test = train_test_split(data, random_state=0, test_size=0.4)
@@ -58,8 +63,8 @@ def splitratio(file,sheets,label2ids,filelists,ratiolists):
 
 
 if __name__ == '__main__':
-    file = 'data/NLP聊天内容梳理2022.10.08.xlsx'
-    splitratio(file, [0,1], label2idlist, filelists, [0.4,0.3])
+    file = 'C:/Users/sunyongfa/Desktop/result.xlsx'
+    splitratio(file, label2idlist, filelists, [0.4,0.3])
 
 
 
