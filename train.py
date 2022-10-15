@@ -128,9 +128,10 @@ def train_epoch(train_stage, master_gpu_id, model, optimizer, dataloader, gradie
 
 
 def train_model(train_stage, save_model_path, master_gpu_id, model, optimizer, epochs, 
-                train_dataset, eval_dataset,
+                train_dataset, dev_dataset,
                 batch_size=1, gradient_accumulation_steps=1,
                 use_cuda=False, num_workers=1):
+
     logging.info("Start Training".center(60, "="))
     training_dataloader = data.DataLoader(dataset=train_dataset,
                                           collate_fn=TextCollate(train_dataset),
@@ -138,19 +139,30 @@ def train_model(train_stage, save_model_path, master_gpu_id, model, optimizer, e
                                           batch_size=batch_size,
                                           num_workers=num_workers,
                                           shuffle=True)
-    best_merit=0.0
+    best_loss=float('inf')
+    best_accuracy=0.0
     for epoch in range(1, epochs + 1):
         logging.info("Training Epoch: " + str(epoch))
         avg_loss = train_epoch(train_stage, master_gpu_id, model, optimizer, training_dataloader,
                                gradient_accumulation_steps, use_cuda)
         logging.info("Average Loss: " + format(avg_loss, "0.4f"))
-        current_merit=eval_model(train_stage, master_gpu_id, model, eval_dataset, batch_size=batch_size, use_cuda=use_cuda, num_workers=num_workers)
-        if current_merit>best_merit:
-            best_merit=current_merit
+        if dev_dataset==None:
             save_model(save_model_path, model, epoch)
+        else:
+            current_merit=eval_model(train_stage, master_gpu_id, model, dev_dataset, batch_size=batch_size, use_cuda=use_cuda, num_workers=num_workers)
+            if train_stage==0:
+                if current_merit>best_accuracy:
+                    best_accuracy=current_merit
+                    save_model(save_model_path, model, epoch)
+            elif train_stage==1:
+                if current_merit<best_loss:
+                    best_loss=current_merit
+                    save_model(save_model_path, model, epoch)
 
 
 def main(args):
+    print(args)
+    eval_dataset=None
     config = load_json_config(args.model_config_file)
     logging.info(json.dumps(config, indent=2, sort_keys=True))
     logging.info("Load HyperParameters Done")
@@ -212,6 +224,7 @@ def main(args):
                              max_seq_len=config.get("max_seq_len"),
                              num_class=config.get("num_class"),
                              data_file=args.eval_data)
+
         logging.info("Load Eval Dataset Done, Total eval line: %s", eval_dataset.__len__())
 
     #-----------------------Running Mode Start--------------------------------#
@@ -269,3 +282,4 @@ if __name__ == "__main__":
     parsed_args = parser.parse_args()
     debug_break = (parsed_args.debug_break == 1)
     main(parsed_args)
+
