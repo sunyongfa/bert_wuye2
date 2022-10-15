@@ -3,16 +3,6 @@ import os
 from sklearn.utils import shuffle
 from sklearn.model_selection import train_test_split
 
-'''i = 0
-    id2label = {}
-    label2id = {}
-    with open("id2label.txt", 'w', encoding="utf-8") as f1, open("label2id.txt", 'w', encoding="utf-8") as f2:
-        for line in set(data[0]):
-            id2label[str(i)] = line.strip()
-            label2id[line.strip()] = str(i)
-            i += 1
-        f1.write(str(id2label))
-        f2.write(str(label2id))'''
 
 with open('label2id.txt', 'r', encoding="utf-8") as f:
     label2id0 = eval(f.read())
